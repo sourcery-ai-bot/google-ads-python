@@ -37,7 +37,7 @@ def main(client, customer_id, manager_customer_id):
     client_link_operation = client.get_type(
         'CustomerClientLinkOperation', version='v3')
     client_link = client_link_operation.create
-    client_link.client_customer.value = 'customers/{}'.format(customer_id)
+    client_link.client_customer.value = f'customers/{customer_id}'
     client_link.status = client.get_type(
         'ManagerLinkStatusEnum').PENDING
 
@@ -47,9 +47,9 @@ def main(client, customer_id, manager_customer_id):
         manager_customer_id, client_link_operation)
     resource_name = response.results[0].resource_name
 
-    print('Extended an invitation from customer #{} to customer #{} with '
-          'client link resource_name #{}'.format(
-              manager_customer_id, customer_id, resource_name))
+    print(
+        f'Extended an invitation from customer #{manager_customer_id} to customer #{customer_id} with client link resource_name #{resource_name}'
+    )
 
     # Find the manager_link_id of the link we just created, so we can construct
     # the resource name for the link from the client side. Note that since we
@@ -76,9 +76,7 @@ def main(client, customer_id, manager_customer_id):
     manager_link_operation = client.get_type(
         'CustomerManagerLinkOperation', version='v3')
     manager_link = manager_link_operation.update
-    manager_link.resource_name.value = (
-        'customers/{}/customerManagerLinks/{}~{}'.format(
-              customer_id, manager_customer_id, manager_link_id))
+    manager_link.resource_name.value = f'customers/{customer_id}/customerManagerLinks/{manager_customer_id}~{manager_link_id}'
 
     manager_link.status = client.get_type('ManagerLinkStatusEnum', version='v3')
     field_mask = protobuf_helpers.field_mask(None, manager_link)
@@ -90,8 +88,7 @@ def main(client, customer_id, manager_customer_id):
         manager_customer_id, [manager_link_operation])
     resource_name = response.results[0].resource_name
 
-    print('Client accepted invitation with resource_name: #{}'.format(
-        resource_name))
+    print(f'Client accepted invitation with resource_name: #{resource_name}')
 
 if __name__ == '__main__':
     # GoogleAdsClient will read the google-ads.yaml configuration file in the

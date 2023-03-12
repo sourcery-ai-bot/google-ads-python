@@ -36,7 +36,7 @@ def main(client):
 
         resource_names = accessible_customers.resource_names
         for resource_name in resource_names:
-            print('Customer resource name: "%s"' % resource_name)
+            print(f'Customer resource name: "{resource_name}"')
     except google.ads.google_ads.errors.GoogleAdsException as ex:
         print('Request with ID "%s" failed with status "%s" and includes the '
               'following errors:' % (ex.request_id, ex.error.code().name))

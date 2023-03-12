@@ -78,8 +78,9 @@ def main(client, customer_id, billing_setup_id):
                     print('\t\tOn field: %s' % field_path_element.field_name)
         sys.exit(1)
 
-    print('Created account budget proposal "%s".'
-          % account_budget_proposal_response.result.resource_name)
+    print(
+        f'Created account budget proposal "{account_budget_proposal_response.result.resource_name}".'
+    )
 
 
 if __name__ == '__main__':

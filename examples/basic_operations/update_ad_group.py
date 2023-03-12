@@ -52,7 +52,7 @@ def main(client, customer_id, ad_group_id, bid_micro_amount):
                     print('\t\tOn field: %s' % field_path_element.field_name)
         sys.exit(1)
 
-    print('Updated ad group %s.' % ad_group_response.results[0].resource_name)
+    print(f'Updated ad group {ad_group_response.results[0].resource_name}.')
 
 
 if __name__ == '__main__':

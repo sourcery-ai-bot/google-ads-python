@@ -48,8 +48,9 @@ def main(client, customer_id, billing_setup_id):
                     print('\t\tOn field: %s' % field_path_element.field_name)
         sys.exit(1)
 
-    print('Removed billing setup %s.'
-          % billing_setup_response.results[0].resource_name)
+    print(
+        f'Removed billing setup {billing_setup_response.results[0].resource_name}.'
+    )
 
 
 if __name__ == '__main__':

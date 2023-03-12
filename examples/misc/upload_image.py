@@ -25,12 +25,11 @@ from google.ads.google_ads.errors import GoogleAdsException
 
 def main(client, customer_id):
     """Main method, to run this code example as a standalone application."""
-    URL = "https://goo.gl/3b9Wfh"
-
     media_file_operation = client.get_type('MediaFileOperation', version='v3')
     media_file = media_file_operation.create
     media_file.name.value = "Ad Image"
     media_file.type = client.get_type('MediaTypeEnum', version='v3').IMAGE
+    URL = "https://goo.gl/3b9Wfh"
     media_file.source_url.value = URL
     # Download the image as bytes from the URL
     media_file.image.data.value = requests.get(URL).content
@@ -42,13 +41,14 @@ def main(client, customer_id):
             media_file_service.mutate_media_files(customer_id,
                                                   [media_file_operation])
         )
-        print(f'Uploaded file(s):')
+        print('Uploaded file(s):')
         for row in mutate_media_files_response.results:
             print(f'\tResource name: {row.resource_name}')
 
     except GoogleAdsException as ex:
-        print('Request with ID "%s" failed with status "%s" and includes the '
-              'following errors:' % (ex.request_id, ex.error.code().name))
+        print(
+            f'Request with ID "{ex.request_id}" failed with status "{ex.error.code().name}" and includes the following errors:'
+        )
         for error in ex.failure.errors:
             print('\tError with message "%s".' % error.message)
             if error.location:

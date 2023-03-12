@@ -74,17 +74,13 @@ def convert_upper_case_to_snake_case(string):
         string: an arbitrary string to convert.
     """
     new_string = ''
-    index = 0
-
-    for char in string:
+    for index, char in enumerate(string):
         if index == 0:
             new_string += char.lower()
         elif char.isupper():
             new_string += f'_{char.lower()}'
         else:
             new_string += char
-
-        index += 1
 
     return new_string
 

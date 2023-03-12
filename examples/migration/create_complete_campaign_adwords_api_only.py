@@ -50,11 +50,9 @@ def create_campaign_budget(client):
     """
     budget_service = client.GetService('BudgetService', version='v201809')
     budget = {
-        'name' : 'Interplanetary Cruise Budget #{}'.format(uuid.uuid4()),
-        'amount': {
-            'microAmount' : '50000000'
-        },
-        'deliveryMethod' : 'STANDARD'
+        'name': f'Interplanetary Cruise Budget #{uuid.uuid4()}',
+        'amount': {'microAmount': '50000000'},
+        'deliveryMethod': 'STANDARD',
     }
     budget_operations = [{
         'operator': 'ADD',
@@ -63,8 +61,9 @@ def create_campaign_budget(client):
     # Add budget.
     results = budget_service.mutate(budget_operations)
     created_budget = results['value'][0]
-    print('Budget with ID {} and name {} was created'.format(
-           created_budget['budgetId'], created_budget['name']))
+    print(
+        f"Budget with ID {created_budget['budgetId']} and name {created_budget['name']} was created"
+    )
     return created_budget['budgetId']
 
 
@@ -80,27 +79,23 @@ def create_campaign(client, budget_id):
     """
     campaign_service = client.GetService('CampaignService', version='v201809')
     campaign = {
-        'name': 'Interplanetary Cruise #{}'.format(uuid.uuid4()),
+        'name': f'Interplanetary Cruise #{uuid.uuid4()}',
         'advertisingChannelType': 'SEARCH',
-        # Recommendation: Set the campaign to PAUSED when creating it to stop the
-        # ads from immediately serving. Set to ENABLED once you've added
-        # targeting and the ads are ready to serve.
         'status': 'PAUSED',
         'biddingStrategyConfiguration': {
             'biddingStrategyType': 'MANUAL_CPC',
         },
-        'startDate': (datetime.datetime.now() +
-            datetime.timedelta(1)).strftime('%Y%m%d'),
-        'endDate': (datetime.datetime.now() +
-            datetime.timedelta(365)).strftime('%Y%m%d'),
-        # Budget (required) - note only the budget ID is required.
-        'budget': {
-            'budgetId': budget_id
-        },
+        'startDate': (
+            datetime.datetime.now() + datetime.timedelta(1)
+        ).strftime('%Y%m%d'),
+        'endDate': (
+            datetime.datetime.now() + datetime.timedelta(365)
+        ).strftime('%Y%m%d'),
+        'budget': {'budgetId': budget_id},
         'networkSetting': {
             'targetGoogleSearch': 'true',
             'targetSearchNetwork': 'true',
-        }
+        },
     }
     campaign_operations = [{
         'operator': 'ADD',
@@ -108,8 +103,9 @@ def create_campaign(client, budget_id):
     }]
     results = campaign_service.mutate(campaign_operations)
     created_campaign = results['value'][0]
-    print('CreatedCampign with ID {} and name {} was created'.format(
-           created_campaign['id'], created_campaign['name']))
+    print(
+        f"CreatedCampign with ID {created_campaign['id']} and name {created_campaign['name']} was created"
+    )
     return created_campaign['id']
 
 
@@ -126,21 +122,21 @@ def create_ad_group(client, campaign_id):
     """
     ad_group_service = client.GetService('AdGroupService', 'v201809')
     ad_group = {
-        'name': 'Earth to Mars Cruise #{}'.format(uuid.uuid4()),
+        'name': f'Earth to Mars Cruise #{uuid.uuid4()}',
         'campaignId': campaign_id,
         'status': 'ENABLED',
-        'biddingStrategyConfiguration' : {
-            'bids': [{
-                # The 'xsi_type' field allows you to specify the xsi:type of the
-                # object being created. It's only necessary when you must provide
-                # an explicit type that the client library can't infer.
-                'xsi_type': 'CpcBid',
-                'bid': {
-                    'microAmount': 10000000
+        'biddingStrategyConfiguration': {
+            'bids': [
+                {
+                    # The 'xsi_type' field allows you to specify the xsi:type of the
+                    # object being created. It's only necessary when you must provide
+                    # an explicit type that the client library can't infer.
+                    'xsi_type': 'CpcBid',
+                    'bid': {'microAmount': 10000000},
                 }
-            }]
+            ]
         },
-        'adGroupAdRotationMode': 'OPTIMIZE'
+        'adGroupAdRotationMode': 'OPTIMIZE',
     }
 
     adgroup_operations = [{
@@ -149,8 +145,9 @@ def create_ad_group(client, campaign_id):
     }]
     results = ad_group_service.mutate(adgroup_operations)
     created_ad_group = results['value'][0]
-    print('Ad group with ID {} and name {} was created'.format(
-           created_ad_group['id'], created_ad_group['name']))
+    print(
+        f"Ad group with ID {created_ad_group['id']} and name {created_ad_group['name']} was created"
+    )
     return created_ad_group['id']
 
 
@@ -163,22 +160,20 @@ def create_text_ads(client, ad_group_id):
     """
     ad_group_service = client.GetService('AdGroupAdService', 'v201809')
     operations = []
-    for i in range(NUMBER_OF_ADS):
+    for _ in range(NUMBER_OF_ADS):
         operation = {
             'xsi_type': 'AdGroupAd',
             'adGroupId': ad_group_id,
-            # Additional properties (non-required).
             'status': 'PAUSED',
             'ad': {
                 'xsi_type': 'ExpandedTextAd',
-                'headlinePart1': 'Cruise #{} to Mars'.format(
-                                  str(uuid.uuid4())[:8]),
+                'headlinePart1': f'Cruise #{str(uuid.uuid4())[:8]} to Mars',
                 'headlinePart2': 'Best Space Cruise Line',
                 'headlinePart3': 'For Your Loved Ones',
                 'description': 'Buy your tickets now!',
                 'description2': 'Discount ends soon',
-                'finalUrls': ['http://www.example.com/']
-            }
+                'finalUrls': ['http://www.example.com/'],
+            },
         }
         adgroup_operations = {
             'operator': 'ADD',
@@ -188,10 +183,9 @@ def create_text_ads(client, ad_group_id):
 
     results = ad_group_service.mutate(operations)
     for result in results['value']:
-        print('Expanded text ad with ID {} and '
-              'headline {}-{} {} was created'.format(
-               result['ad']['id'], result['ad']['headlinePart1'],
-               result['ad']['headlinePart2'], result['ad']['headlinePart3']))
+        print(
+            f"Expanded text ad with ID {result['ad']['id']} and headline {result['ad']['headlinePart1']}-{result['ad']['headlinePart2']} {result['ad']['headlinePart3']} was created"
+        )
 
 
 def create_keywords(client, ad_group_id, keywords_to_add):
@@ -211,13 +205,14 @@ def create_keywords(client, ad_group_id, keywords_to_add):
             'xsi_type': 'BiddableAdGroupCriterion',
             'adGroupId': ad_group_id,
             'criterion': {
-                'xsi_type' : 'Keyword',
+                'xsi_type': 'Keyword',
                 'text': keyword,
-                'matchType' : 'BROAD'
+                'matchType': 'BROAD',
             },
             'userStatus': 'PAUSED',
-            'finalUrls' : ['http://www.example.com/mars/cruise/?kw={}'.format(
-                           urllib.parse.quote(keyword))]
+            'finalUrls': [
+                f'http://www.example.com/mars/cruise/?kw={urllib.parse.quote(keyword)}'
+            ],
         }
         create_keyword = {
             'operator': 'ADD',
@@ -227,10 +222,9 @@ def create_keywords(client, ad_group_id, keywords_to_add):
 
     results = ad_group_criterion_service.mutate(operations)
     for result in results['value']:
-        print('Keyword with ad group ID {}, keyword ID {}, text {} and match'
-              'type {} was created'.format(result['adGroupId'],
-               result['criterion']['id'], result['criterion']['text'],
-               result['criterion']['matchType']))
+        print(
+            f"Keyword with ad group ID {result['adGroupId']}, keyword ID {result['criterion']['id']}, text {result['criterion']['text']} and matchtype {result['criterion']['matchType']} was created"
+        )
 
 
 if __name__ == '__main__':

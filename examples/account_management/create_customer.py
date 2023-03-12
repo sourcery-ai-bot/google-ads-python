@@ -31,12 +31,10 @@ import google.ads.google_ads.client
 def main(client, manager_customer_id):
     customer_service = client.get_service('CustomerService', version='v3')
     customer = client.get_type('Customer', version='v3')
-    today = datetime.today().strftime('%Y%m%d %H:%M:%S')
-    customer.descriptive_name.value = ('Account created with '
-                                       'CustomerService on %s' % today)
-    # For a list of valid currency codes and time zones see this documentation:
-    # https://developers.google.com/adwords/api/docs/appendix/codes-formats
-    customer.currency_code.value = 'USD'
+    today = datetime.now().strftime('%Y%m%d %H:%M:%S')
+    customer.descriptive_name.value = (
+        f'Account created with CustomerService on {today}'
+    )
     customer.time_zone.value = 'America/New_York'
     # The below values are optional. For more information about URL
     # options see: https://support.google.com/google-ads/answer/6305348
@@ -45,15 +43,17 @@ def main(client, manager_customer_id):
                                        '&adgroupid={adgroupid}')
     customer.has_partners_badge.value = False
 
+    customer.currency_code.value = 'USD'
     try:
         response = customer_service.create_customer_client(
             manager_customer_id, customer)
-        print(('Customer created with resource name "%s" under manager account '
-               'with customer ID "%s"') %
-               (response.resource_name, manager_customer_id))
+        print(
+            f'Customer created with resource name "{response.resource_name}" under manager account with customer ID "{manager_customer_id}"'
+        )
     except google.ads.google_ads.errors.GoogleAdsException as ex:
-        print('Request with ID "%s" failed with status "%s" and includes the '
-              'following errors:' % (ex.request_id, ex.error.code().name))
+        print(
+            f'Request with ID "{ex.request_id}" failed with status "{ex.error.code().name}" and includes the following errors:'
+        )
         for error in ex.failure.errors:
             print('\tError with message "%s".' % error.message)
             if error.location:

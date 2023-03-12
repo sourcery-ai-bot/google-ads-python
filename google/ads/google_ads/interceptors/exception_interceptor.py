@@ -61,10 +61,7 @@ class _UnaryStreamWrapper(grpc.Call, grpc.Future):
         return self._underlay_call.result(timeout=timeout)
 
     def exception(self, timeout=None):
-        if self._exception:
-            return self._exception
-        else:
-            return self._underlay_call.exception(timeout=timeout)
+        return self._exception or self._underlay_call.exception(timeout=timeout)
 
     def traceback(self, timeout=None):
         return self._underlay_call.traceback(timeout=timeout)
@@ -162,9 +159,7 @@ class ExceptionInterceptor(Interceptor, UnaryUnaryClientInterceptor,
                 status code of INTERNAL or RESOURCE_EXHAUSTED.
         """
         response = continuation(client_call_details, request)
-        exception = response.exception()
-
-        if exception:
+        if exception := response.exception():
             self._handle_grpc_failure(response)
         else:
             return response

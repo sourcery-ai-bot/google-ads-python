@@ -53,7 +53,7 @@ def main(client, customer_id, campaign_id):
                     print('\t\tOn field: %s' % field_path_element.field_name)
         sys.exit(1)
 
-    print('Updated campaign %s.' % campaign_response.results[0].resource_name)
+    print(f'Updated campaign {campaign_response.results[0].resource_name}.')
 
 
 if __name__ == '__main__':

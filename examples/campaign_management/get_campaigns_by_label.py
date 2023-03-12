@@ -63,10 +63,9 @@ def main(client, customer_id, label_id, page_size):
         # the campaign and label objects because these were included in the
         # search criteria.
         for row in iterator:
-            print('Campaign found with name "{}", ID "{}", and '
-                  'label "{}".'.format(row.campaign.id.value,
-                                       row.campaign.name.value,
-                                       row.label.name.value))
+            print(
+                f'Campaign found with name "{row.campaign.id.value}", ID "{row.campaign.name.value}", and label "{row.label.name.value}".'
+            )
     except GoogleAdsException as ex:
         print_error_and_exit_process(ex)
 
@@ -77,14 +76,14 @@ def print_error_and_exit_process(error):
     Args:
         error: An instance of a GoogleAdsException.
     """
-    print('Request with ID "{}" failed with status "{}" and includes the '
-          'following errors:'.format(error.request_id, error.error.code().name))
+    print(
+        f'Request with ID "{error.request_id}" failed with status "{error.error.code().name}" and includes the following errors:'
+    )
     for error in error.failure.errors:
-        print('\tError with message "{}".'.format(error.message))
+        print(f'\tError with message "{error.message}".')
         if error.location:
             for field_path_element in error.location.field_path_elements:
-                print('\t\tOn field: {}'.format(
-                    field_path_element.field_name))
+                print(f'\t\tOn field: {field_path_element.field_name}')
     sys.exit(1)
 
 

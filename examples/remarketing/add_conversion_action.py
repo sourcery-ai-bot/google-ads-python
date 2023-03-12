@@ -33,7 +33,8 @@ def main(client, customer_id):
     # Create conversion action.
     conversion_action = conversion_action_operation.create
     conversion_action.name.value = (
-        'Earth to Mars Cruises Conversion %s' % uuid.uuid4())
+        f'Earth to Mars Cruises Conversion {uuid.uuid4()}'
+    )
     conversion_action.type = client.get_type(
         'ConversionActionTypeEnum').UPLOAD_CLICKS
     conversion_action.category = client.get_type(
@@ -62,8 +63,9 @@ def main(client, customer_id):
                     print('\t\tOn field: %s' % field_path_element.field_name)
         sys.exit(1)
 
-    print('Created conversion action "%s".'
-          % conversion_action_response.results[0].resource_name)
+    print(
+        f'Created conversion action "{conversion_action_response.results[0].resource_name}".'
+    )
 
 
 if __name__ == '__main__':

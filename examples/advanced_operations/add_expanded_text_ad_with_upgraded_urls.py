@@ -57,9 +57,9 @@ def main(client, customer_id, ad_group_id):
     # too. This can be provided at campaign, ad group, ad, criterion, or feed
     # item levels.
     param_1 = ad_group_ad.ad.url_custom_parameters.add()
-    param_1.key.value = 'season'
     param_1.value.value = 'easter123'
 
+    param_1.key.value = 'season'
     param_2 = ad_group_ad.ad.url_custom_parameters.add()
     param_2.key.value = 'promocode'
     param_2.value.value = 'nj123'
@@ -77,8 +77,9 @@ def main(client, customer_id, ad_group_id):
         ad_group_ad_response = ad_group_ad_service.mutate_ad_group_ads(
             customer_id, [ad_group_ad_operation])
     except google.ads.google_ads.errors.GoogleAdsException as ex:
-        print('Request with ID "%s" failed with status "%s" and includes the '
-              'following errors:' % (ex.request_id, ex.error.code().name))
+        print(
+            f'Request with ID "{ex.request_id}" failed with status "{ex.error.code().name}" and includes the following errors:'
+        )
         for error in ex.failure.errors:
             print('\tError with message "%s".' % error.message)
             if error.location:
@@ -86,8 +87,9 @@ def main(client, customer_id, ad_group_id):
                     print('\t\tOn field: %s' % field_path_element.field_name)
         sys.exit(1)
 
-    print('Created expanded text ad %s.'
-          % ad_group_ad_response.results[0].resource_name)
+    print(
+        f'Created expanded text ad {ad_group_ad_response.results[0].resource_name}.'
+    )
 
 
 if __name__ == '__main__':

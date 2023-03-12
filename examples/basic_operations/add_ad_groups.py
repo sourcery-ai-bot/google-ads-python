@@ -32,7 +32,7 @@ def main(client, customer_id, campaign_id):
     # Create ad group.
     ad_group_operation = client.get_type('AdGroupOperation', version='v3')
     ad_group = ad_group_operation.create
-    ad_group.name.value = 'Earth to Mars cruises %s' % uuid.uuid4()
+    ad_group.name.value = f'Earth to Mars cruises {uuid.uuid4()}'
     ad_group.status = client.get_type('AdGroupStatusEnum', version='v3').ENABLED
     ad_group.campaign.value = campaign_service.campaign_path(
         customer_id, campaign_id)
@@ -54,7 +54,7 @@ def main(client, customer_id, campaign_id):
                     print('\t\tOn field: %s' % field_path_element.field_name)
         sys.exit(1)
 
-    print('Created ad group %s.' % ad_group_response.results[0].resource_name)
+    print(f'Created ad group {ad_group_response.results[0].resource_name}.')
 
 
 if __name__ == '__main__':

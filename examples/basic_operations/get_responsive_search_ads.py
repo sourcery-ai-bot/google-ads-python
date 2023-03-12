@@ -42,7 +42,7 @@ def main(client, customer_id, page_size, ad_group_id=None):
     # Optional: Specify an ad group ID to restrict search to only a given
     # ad group.
     if ad_group_id:
-        query = query + f' AND ad_group.id = {ad_group_id}'
+        query += f' AND ad_group.id = {ad_group_id}'
 
     results = ga_service.search(customer_id, query=query, page_size=page_size)
     aga_status_enum = client.get_type(
@@ -82,11 +82,13 @@ def _ad_text_assets_to_strs(client, assets):
     """Converts a list of AdTextAssets to a list of user-friendly strings."""
     sa_field_type_enum = client.get_type(
         'ServedAssetFieldTypeEnum', version='v2').ServedAssetFieldType
-    s = []
-    for asset in assets:
-        s.append('\t"' + asset.text.value + '" pinned to ' +
-                 sa_field_type_enum.Name(asset.pinned_field))
-    return s
+    return [
+        '\t"'
+        + asset.text.value
+        + '" pinned to '
+        + sa_field_type_enum.Name(asset.pinned_field)
+        for asset in assets
+    ]
 
 if __name__ == '__main__':
     # GoogleAdsClient will read the google-ads.yaml configuration file in the

@@ -76,10 +76,10 @@ def validate_dict(config_data):
     Raises:
         ValueError: If the dict does not contain all required config keys.
     """
-    if not all(key in config_data for key in _REQUIRED_KEYS):
-        raise ValueError('A required field in the configuration data was not '
-                         'found. The required fields are: {}'.format(
-                             str(_REQUIRED_KEYS)))
+    if any(key not in config_data for key in _REQUIRED_KEYS):
+        raise ValueError(
+            f'A required field in the configuration data was not found. The required fields are: {str(_REQUIRED_KEYS)}'
+        )
 
     if 'login_customer_id' in config_data:
         validate_login_customer_id(config_data['login_customer_id'])
@@ -95,11 +95,12 @@ def validate_login_customer_id(login_customer_id):
         ValueError: If the login customer ID is not an int in the
             range 0 - 9999999999.
     """
-    if login_customer_id is not None:
-        if not login_customer_id.isdigit() or len(login_customer_id) != 10:
-            raise ValueError('The specified login customer ID is invalid. '
-                             'It must be a ten digit number represented '
-                             'as a string, i.e. "1234567890"')
+    if login_customer_id is not None and (
+        not login_customer_id.isdigit() or len(login_customer_id) != 10
+    ):
+        raise ValueError('The specified login customer ID is invalid. '
+                         'It must be a ten digit number represented '
+                         'as a string, i.e. "1234567890"')
 
 
 @_config_validation_decorator
@@ -186,7 +187,7 @@ def load_from_env():
         for key, env_variable in _KEYS_ENV_VARIABLES_MAP.items()
         if env_variable in os.environ
     }
-    if 'logging' in config_data.keys():
+    if 'logging' in config_data:
         try:
             config_data['logging'] = json.loads(config_data['logging'])
         except json.JSONDecodeError:
@@ -227,9 +228,7 @@ def convert_login_customer_id_to_str(config_data):
     Returns:
         The same config dict object with a mutated login_customer_id attr.
     """
-    login_customer_id = config_data.get('login_customer_id')
-
-    if login_customer_id:
+    if login_customer_id := config_data.get('login_customer_id'):
         config_data['login_customer_id'] = str(login_customer_id)
 
     return config_data

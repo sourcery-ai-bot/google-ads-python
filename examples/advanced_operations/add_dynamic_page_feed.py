@@ -72,14 +72,14 @@ def main(client, customer_id, campaign_id, ad_group_id):
         add_dsa_targeting(client, customer_id, ad_group_resource_name,
                           dsa_page_url_label)
     except GoogleAdsException as ex:
-        print('Request with ID "{}" failed with status "{}" and includes the '
-              'following errors:'.format(ex.request_id, ex.error.code().name))
+        print(
+            f'Request with ID "{ex.request_id}" failed with status "{ex.error.code().name}" and includes the following errors:'
+        )
         for error in ex.failure.errors:
-            print('\tError with message "{}".'.format(error.message))
+            print(f'\tError with message "{error.message}".')
             if error.location:
                 for field_path_element in error.location.field_path_elements:
-                    print('\t\tOn field: {}'.format(
-                        field_path_element.field_name))
+                    print(f'\t\tOn field: {field_path_element.field_name}')
         sys.exit(1)
 
 
@@ -97,7 +97,7 @@ def create_feed(client, customer_id):
     feed_operation = client.get_type('FeedOperation', version='v3')
     # Create a new feed.
     feed = feed_operation.create
-    feed.name.value = 'DSA Feed #{}'.format(uuid.uuid4())
+    feed.name.value = f'DSA Feed #{uuid.uuid4()}'
     feed.origin = client.get_type('FeedOriginEnum', version='v3').USER
 
     feed_attribute_type_enum = client.get_type('FeedAttributeTypeEnum',
@@ -194,7 +194,7 @@ def create_feed_mapping(client, customer_id, feed_details):
     resource_name = response.results[0].resource_name
 
     # Display the results.
-    print('Feed mapping created with resource_name: # {}'.format(resource_name))
+    print(f'Feed mapping created with resource_name: # {resource_name}')
 
 
 def create_feed_items(client, customer_id, feed_details, label):
@@ -274,12 +274,12 @@ def update_campaign_dsa_setting(client, customer_id, campaign_id, feed_details):
         campaign = row.campaign
 
     if not campaign:
-        raise ValueError('Campaign with id #{} not found'.format(campaign_id))
+        raise ValueError(f'Campaign with id #{campaign_id} not found')
 
     if not campaign.dynamic_search_ads_setting.domain_name:
         raise ValueError(
-            'Campaign id #{} is not set up for Dynamic Search Ads.'.format(
-                campaign_id))
+            f'Campaign id #{campaign_id} is not set up for Dynamic Search Ads.'
+        )
 
     # Retrieve a new campaign operation
     campaign_operation = client.get_type('CampaignOperation', version='v3')
@@ -301,7 +301,7 @@ def update_campaign_dsa_setting(client, customer_id, campaign_id, feed_details):
     resource_name = response.results[0].resource_name
 
     # Display the results.
-    print('Updated campaign #{}'.format(resource_name))
+    print(f'Updated campaign #{resource_name}')
 
 
 def add_dsa_targeting(client, customer_id, ad_group_resource_name, label):
@@ -336,8 +336,7 @@ def add_dsa_targeting(client, customer_id, ad_group_resource_name, label):
     resource_name = response.results[0].resource_name
 
     # Display the results.
-    print('Created ad group criterion with resource_name: # {}'.format(
-        resource_name))
+    print(f'Created ad group criterion with resource_name: # {resource_name}')
 
 
 if __name__ == '__main__':

@@ -117,8 +117,9 @@ def main(client, customer_id, campaign_id):
                     print(f'\t\tOn field: {field_path_element.field_name}')
         sys.exit(1)
 
-    print('Created extension feed with resource name {}.'
-          .format(feed_response.results[0].resource_name))
+    print(
+        f'Created extension feed with resource name {feed_response.results[0].resource_name}.'
+    )
 
 
 def _create_price_offer(client, header, description, price_in_micros,

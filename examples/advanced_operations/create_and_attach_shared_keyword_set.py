@@ -36,7 +36,7 @@ def main(client, customer_id, campaign_id):
     # Create shared negative keyword set.
     shared_set_operation = client.get_type('SharedSetOperation', version='v3')
     shared_set = shared_set_operation.create
-    shared_set.name.value = 'API Negative keyword list - %s' % uuid.uuid4()
+    shared_set.name.value = f'API Negative keyword list - {uuid.uuid4()}'
     shared_set.type = client.get_type('SharedSetTypeEnum',
                                       version='v3').NEGATIVE_KEYWORDS
 
@@ -44,8 +44,9 @@ def main(client, customer_id, campaign_id):
         shared_set_resource_name = shared_set_service.mutate_shared_sets(
             customer_id, [shared_set_operation]).results[0].resource_name
     except google.ads.google_ads.errors.GoogleAdsException as ex:
-        print('Request with ID "%s" failed with status "%s" and includes the '
-              'following errors:' % (ex.request_id, ex.error.code().name))
+        print(
+            f'Request with ID "{ex.request_id}" failed with status "{ex.error.code().name}" and includes the following errors:'
+        )
         for error in ex.failure.errors:
             print('\tError with message "%s".' % error.message)
             if error.location:
@@ -53,12 +54,10 @@ def main(client, customer_id, campaign_id):
                     print('\t\tOn field: %s' % field_path_element.field_name)
         sys.exit(1)
 
-    print('Created shared set "%s".' % shared_set_resource_name)
-
-    # Keywords to create a shared set of.
-    keywords = ['mars cruise', 'mars hotels']
+    print(f'Created shared set "{shared_set_resource_name}".')
 
     shared_criteria_operations = []
+    keywords = ['mars cruise', 'mars hotels']
     for keyword in keywords:
         shared_criterion_operation = client.get_type('SharedCriterionOperation',
                                                      version='v3')
@@ -74,8 +73,9 @@ def main(client, customer_id, campaign_id):
         response = shared_criterion_service.mutate_shared_criteria(
             customer_id, shared_criteria_operations)
     except google.ads.google_ads.errors.GoogleAdsException as ex:
-        print('Request with ID "%s" failed with status "%s" and includes the '
-              'following errors:' % (ex.request_id, ex.error.code().name))
+        print(
+            f'Request with ID "{ex.request_id}" failed with status "{ex.error.code().name}" and includes the following errors:'
+        )
         for error in ex.failure.errors:
             print('\tError with message "%s".' % error.message)
             if error.location:
@@ -84,7 +84,7 @@ def main(client, customer_id, campaign_id):
         sys.exit(1)
 
     for shared_criterion in response.results:
-        print('Created shared criterion "%s".' % shared_criterion.resource_name)
+        print(f'Created shared criterion "{shared_criterion.resource_name}".')
 
     campaign_set_operation = client.get_type('CampaignSharedSetOperation',
                                              version='v3')
@@ -98,8 +98,9 @@ def main(client, customer_id, campaign_id):
             campaign_shared_set_service.mutate_campaign_shared_sets(
                 customer_id, [campaign_set_operation]).results[0].resource_name)
     except google.ads.google_ads.errors.GoogleAdsException as ex:
-        print('Request with ID "%s" failed with status "%s" and includes the '
-              'following errors:' % (ex.request_id, ex.error.code().name))
+        print(
+            f'Request with ID "{ex.request_id}" failed with status "{ex.error.code().name}" and includes the following errors:'
+        )
         for error in ex.failure.errors:
             print('\tError with message "%s".' % error.message)
             if error.location:
@@ -107,8 +108,7 @@ def main(client, customer_id, campaign_id):
                     print('\t\tOn field: %s' % field_path_element.field_name)
         sys.exit(1)
 
-    print('Created campaign shared set "%s".'
-          % campaign_shared_set_resource_name)
+    print(f'Created campaign shared set "{campaign_shared_set_resource_name}".')
 
 
 if __name__ == '__main__':

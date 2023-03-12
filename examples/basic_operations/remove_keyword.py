@@ -43,7 +43,7 @@ def main(client, customer_id, ad_group_id, criteria_id):
                     print('\t\tOn field: %s' % field_path_element.field_name)
         sys.exit(1)
 
-    print('Removed keyword %s.' % agc_response.results[0].resource_name)
+    print(f'Removed keyword {agc_response.results[0].resource_name}.')
 
 
 if __name__ == '__main__':

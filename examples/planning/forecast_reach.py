@@ -84,10 +84,9 @@ def show_plannable_locations(client):
     print('Plannable Locations')
     print('Name,\tId,\tParentCountryId')
     for location in response.plannable_locations:
-        print(u'"{}",\t{},\t{}'.format(
-            location.name.value,
-            location.id.value,
-            location.parent_country_id.value))
+        print(
+            f'"{location.name.value}",\t{location.id.value},\t{location.parent_country_id.value}'
+        )
 
 
 def show_plannable_products(client, location_id):
@@ -102,7 +101,7 @@ def show_plannable_products(client, location_id):
     reach_plan_service = client.get_service('ReachPlanService', version='v3')
     response = reach_plan_service.list_plannable_products(
             plannable_location_id=_string_value(client, location_id))
-    print('Plannable Products for Location ID {}'.format(location_id))
+    print(f'Plannable Products for Location ID {location_id}')
     print(response)
 
 
@@ -170,11 +169,13 @@ def _request_reach_curve(
     print('Currency, Cost, On-Target Reach, On-Target Imprs, Total Reach,'
           ' Total Imprs, Products')
     for point in response.reach_curve.reach_forecasts:
-        product_splits = []
-        for p in point.forecasted_product_allocations:
-            product_splits.append({
-                    p.plannable_product_code.value:
-                        p.budget_micros.value / ONE_MILLION})
+        product_splits = [
+            {
+                p.plannable_product_code.value: p.budget_micros.value
+                / ONE_MILLION
+            }
+            for p in point.forecasted_product_allocations
+        ]
         print([
                 currency_code,
                 point.cost_micros.value / ONE_MILLION,
@@ -273,14 +274,14 @@ def main(client, customer_id):
         forecast_suggested_mix(
                 client, customer_id, location_id, currency_code, budget)
     except GoogleAdsException as ex:
-        print('Request with ID "{}" failed with status "%s" and includes the '
-              'following errors:'.format(ex.request_id, ex.error.code().name))
+        print(
+            f'Request with ID "{ex.request_id}" failed with status "%s" and includes the following errors:'
+        )
         for error in ex.failure.errors:
-            print('\tError with message "{}".'.format(error.message))
+            print(f'\tError with message "{error.message}".')
             if error.location:
                 for field_path_element in error.location.field_path_elements:
-                    print('\t\tOn field: {}'.format(
-                            field_path_element.field_name))
+                    print(f'\t\tOn field: {field_path_element.field_name}')
         sys.exit(1)
 
 

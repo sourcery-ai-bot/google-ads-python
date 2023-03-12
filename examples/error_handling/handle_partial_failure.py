@@ -39,15 +39,15 @@ def main(client, customer_id, campaign_id):
     try:
         ad_group_response = create_ad_groups(client, customer_id, campaign_id)
     except GoogleAdsException as ex:
-        print('Request with ID "{}" failed with status "{}" and includes the '
-              'following errors:'.format(ex.request_id, ex.error.code().name))
+        print(
+            f'Request with ID "{ex.request_id}" failed with status "{ex.error.code().name}" and includes the following errors:'
+        )
         for error in ex.failure.errors:
-            print('\tError with message "{}".'.format(error.message))
+            print(f'\tError with message "{error.message}".')
 
             if error.location:
                 for field_path_element in error.location.field_path_elements:
-                    print('\t\tOn field: {}'.format(
-                        field_path_element.field_name))
+                    print(f'\t\tOn field: {field_path_element.field_name}')
         sys.exit(1)
     else:
         print_results(client, ad_group_response)
@@ -68,19 +68,16 @@ def create_ad_groups(client, customer_id, campaign_id):
     resource_name = campaign_service.campaign_path(customer_id, campaign_id)
 
     invalid_resource_name = campaign_service.campaign_path(customer_id, 0)
-    ad_group_operations = []
-
     # This AdGroup should be created successfully - assuming the campaign in
     # the params exists.
     ad_group_op1 = client.get_type('AdGroupOperation', version='v3')
-    ad_group_op1.create.name.value = 'Valid AdGroup: %s' % uuid.uuid4()
+    ad_group_op1.create.name.value = f'Valid AdGroup: {uuid.uuid4()}'
     ad_group_op1.create.campaign.value = resource_name
-    ad_group_operations.append(ad_group_op1)
-
+    ad_group_operations = [ad_group_op1]
     # This AdGroup will always fail - campaign ID 0 in resource names is
     # never valid.
     ad_group_op2 = client.get_type('AdGroupOperation', version='v3')
-    ad_group_op2.create.name.value = 'Broken AdGroup: %s' % (uuid.uuid4())
+    ad_group_op2.create.name.value = f'Broken AdGroup: {uuid.uuid4()}'
     ad_group_op2.create.campaign.value = invalid_resource_name
     ad_group_operations.append(ad_group_op2)
 
@@ -170,10 +167,9 @@ def print_results(client, response):
                 # Construct and print a string that details which element in
                 # the above ad_group_operations list failed (by index number)
                 # as well as the error message and error code.
-                print('A partial failure at index {} occurred.\n'
-                      'Error message: {}\nError code: {}'.format(
-                          error.location.field_path_elements[0].index.value,
-                          error.message, error.error_code))
+                print(
+                    f'A partial failure at index {error.location.field_path_elements[0].index.value} occurred.\nError message: {error.message}\nError code: {error.error_code}'
+                )
     else:
         print('All operations completed successfully. No partial failure '
               'to show.')
@@ -187,8 +183,7 @@ def print_results(client, response):
         if message.ByteSize() == 0:
             continue
 
-        print('Created ad group with resource_name: {}.'.format(
-            message.resource_name))
+        print(f'Created ad group with resource_name: {message.resource_name}.')
 
 
 if __name__ == '__main__':

@@ -35,8 +35,8 @@ def main(client_secrets_path, scopes):
 
     flow.run_console()
 
-    print('Access token: %s' % flow.credentials.token)
-    print('Refresh token: %s' % flow.credentials.refresh_token)
+    print(f'Access token: {flow.credentials.token}')
+    print(f'Refresh token: {flow.credentials.refresh_token}')
 
 
 if __name__ == '__main__':

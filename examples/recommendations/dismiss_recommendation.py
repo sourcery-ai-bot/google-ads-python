@@ -51,8 +51,9 @@ def main(client, customer_id, recommendation_id):
                     print('\t\tOn field: %s' % field_path_element.field_name)
         sys.exit(1)
 
-    print('Dismissed recommendation with resource name: "%s".'
-          % dismissal_response.results[0].resource_name)
+    print(
+        f'Dismissed recommendation with resource name: "{dismissal_response.results[0].resource_name}".'
+    )
 
 
 if __name__ == '__main__':

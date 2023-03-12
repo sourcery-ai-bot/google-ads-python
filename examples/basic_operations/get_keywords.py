@@ -34,21 +34,19 @@ def main(client, customer_id, page_size, ad_group_id=None):
              'WHERE ad_group_criterion.type = KEYWORD')
 
     if ad_group_id:
-        query = '%s AND ad_group.id = %s' % (query, ad_group_id)
+        query = f'{query} AND ad_group.id = {ad_group_id}'
 
     results = ga_service.search(customer_id, query=query, page_size=page_size)
 
     try:
         for row in results:
-            ad_group = row.ad_group
             ad_group_criterion = row.ad_group_criterion
             keyword = row.ad_group_criterion.keyword
 
-            print('Keyword with text "%s", match type %s, criteria type %s, '
-                  'and ID %s was found in ad group with ID %s.'
-                  % (keyword.text.value, keyword.match_type,
-                     ad_group_criterion.type,
-                     ad_group_criterion.criterion_id.value, ad_group.id.value))
+            ad_group = row.ad_group
+            print(
+                f'Keyword with text "{keyword.text.value}", match type {keyword.match_type}, criteria type {ad_group_criterion.type}, and ID {ad_group_criterion.criterion_id.value} was found in ad group with ID {ad_group.id.value}.'
+            )
     except google.ads.google_ads.errors.GoogleAdsException as ex:
         print('Request with ID "%s" failed with status "%s" and includes the '
               'following errors:' % (ex.request_id, ex.error.code().name))

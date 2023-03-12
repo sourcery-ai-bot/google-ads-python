@@ -38,7 +38,7 @@ def main(client, customer_id):
     campaign_budget_operation = client.get_type('CampaignBudgetOperation',
                                                 version='v3')
     campaign_budget = campaign_budget_operation.create
-    campaign_budget.name.value = 'Interplanetary Budget %s' % uuid.uuid4()
+    campaign_budget.name.value = f'Interplanetary Budget {uuid.uuid4()}'
     campaign_budget.delivery_method = client.get_type(
         'BudgetDeliveryMethodEnum').STANDARD
     campaign_budget.amount_micros.value = 500000
@@ -61,7 +61,7 @@ def main(client, customer_id):
     # Create campaign.
     campaign_operation = client.get_type('CampaignOperation', version='v3')
     campaign = campaign_operation.create
-    campaign.name.value = 'Interplanetary Cruise %s' % uuid.uuid4()
+    campaign.name.value = f'Interplanetary Cruise {uuid.uuid4()}'
     campaign.advertising_channel_type = client.get_type(
         'AdvertisingChannelTypeEnum').SEARCH
 
@@ -104,7 +104,7 @@ def main(client, customer_id):
                     print('\t\tOn field: %s' % field_path_element.field_name)
         sys.exit(1)
 
-    print('Created campaign %s.' % campaign_response.results[0].resource_name)
+    print(f'Created campaign {campaign_response.results[0].resource_name}.')
 
 
 if __name__ == '__main__':

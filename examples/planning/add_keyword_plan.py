@@ -39,14 +39,14 @@ def main(client, customer_id):
     try:
         add_keyword_plan(client, customer_id)
     except GoogleAdsException as ex:
-        print('Request with ID "{}" failed with status "{}" and includes the '
-              'following errors:'.format(ex.request_id, ex.error.code().name))
+        print(
+            f'Request with ID "{ex.request_id}" failed with status "{ex.error.code().name}" and includes the following errors:'
+        )
         for error in ex.failure.errors:
-            print('\tError with message "{}".'.format(error.message))
+            print(f'\tError with message "{error.message}".')
             if error.location:
                 for field_path_element in error.location.field_path_elements:
-                    print('\t\tOn field: {}'.format(
-                        field_path_element.field_name))
+                    print(f'\t\tOn field: {field_path_element.field_name}')
         sys.exit(1)
 
 
@@ -86,8 +86,7 @@ def create_keyword_plan(client, customer_id):
     operation = client.get_type('KeywordPlanOperation', version='v3')
     keyword_plan = operation.create
 
-    keyword_plan.name.value = ('Keyword plan for traffic estimate {}'.format(
-        uuid.uuid4()))
+    keyword_plan.name.value = f'Keyword plan for traffic estimate {uuid.uuid4()}'
 
     forecast_interval = client.get_type('KeywordPlanForecastIntervalEnum',
                                         version='v3').NEXT_QUARTER
@@ -99,7 +98,7 @@ def create_keyword_plan(client, customer_id):
                                                          [operation])
     resource_name = response.results[0].resource_name
 
-    print('Created keyword plan with resource name: {}'.format(resource_name))
+    print(f'Created keyword plan with resource name: {resource_name}')
 
     return resource_name
 
@@ -122,8 +121,7 @@ def create_keyword_plan_campaign(client, customer_id, keyword_plan):
     operation = client.get_type('KeywordPlanCampaignOperation', version='v3')
     keyword_plan_campaign = operation.create
 
-    keyword_plan_campaign.name.value = 'Keyword plan campaign {}'.format(
-        uuid.uuid4())
+    keyword_plan_campaign.name.value = f'Keyword plan campaign {uuid.uuid4()}'
     keyword_plan_campaign.cpc_bid_micros.value = 1000000
     keyword_plan_campaign.keyword_plan.value = keyword_plan
 
@@ -150,8 +148,7 @@ def create_keyword_plan_campaign(client, customer_id, keyword_plan):
 
     resource_name = response.results[0].resource_name
 
-    print('Created keyword plan campaign with resource name: {}'.format(
-        resource_name))
+    print(f'Created keyword plan campaign with resource name: {resource_name}')
 
     return resource_name
 
@@ -174,8 +171,7 @@ def create_keyword_plan_ad_group(client, customer_id, keyword_plan_campaign):
     operation = client.get_type('KeywordPlanAdGroupOperation', version='v3')
     keyword_plan_ad_group = operation.create
 
-    keyword_plan_ad_group.name.value = 'Keyword plan ad group {}'.format(
-        uuid.uuid4())
+    keyword_plan_ad_group.name.value = f'Keyword plan ad group {uuid.uuid4()}'
     keyword_plan_ad_group.cpc_bid_micros.value = 2500000
     keyword_plan_ad_group.keyword_plan_campaign.value = keyword_plan_campaign
 
@@ -186,8 +182,7 @@ def create_keyword_plan_ad_group(client, customer_id, keyword_plan_campaign):
 
     resource_name = response.results[0].resource_name
 
-    print('Created keyword plan ad group with resource name: {}'.format(
-        resource_name))
+    print(f'Created keyword plan ad group with resource name: {resource_name}')
 
     return resource_name
 
@@ -238,8 +233,9 @@ def create_keyword_plan_keywords(client, customer_id, plan_ad_group):
         customer_id, operations)
 
     for result in response.results:
-        print('Created keyword plan keyword with resource name: {}'.format(
-            result.resource_name))
+        print(
+            f'Created keyword plan keyword with resource name: {result.resource_name}'
+        )
 
 
 def create_keyword_plan_negative_keywords(client, customer_id, plan_campaign):
@@ -269,8 +265,9 @@ def create_keyword_plan_negative_keywords(client, customer_id, plan_campaign):
                     .mutate_keyword_plan_negative_keywords(
                         customer_id, [operation]))
 
-    print('Created keyword plan negative keyword with resource name: {}'.format(
-        response.results[0].resource_name))
+    print(
+        f'Created keyword plan negative keyword with resource name: {response.results[0].resource_name}'
+    )
 
 
 if __name__ == '__main__':

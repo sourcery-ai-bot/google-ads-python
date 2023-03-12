@@ -41,7 +41,7 @@ def main(client, customer_id, ad_group_id):
                     print('\t\tOn field: %s' % field_path_element.field_name)
         sys.exit(1)
 
-    print('Removed ad group %s.' % ad_group_response.results[0].resource_name)
+    print(f'Removed ad group {ad_group_response.results[0].resource_name}.')
 
 
 if __name__ == '__main__':

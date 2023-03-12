@@ -26,7 +26,7 @@ _DEFAULT_PAGE_SIZE = 1000
 
 def display_categories(categories, prefix=''):
   for category in categories:
-    print('{}{} [{}]'.format(prefix, category.name, category.id))
+    print(f'{prefix}{category.name} [{category.id}]')
     if not category.children:
       display_categories(category.children, prefix=prefix + category.name)
 
@@ -59,9 +59,7 @@ def main(client, customer_id, page_size):
 
       all_categories[category.id] = category
       parent = product_bidding_category.product_bidding_category_constant_parent
-      parent_id = getattr(parent, 'value', None)
-
-      if parent_id:
+      if parent_id := getattr(parent, 'value', None):
         all_categories[parent_id].children.append(category)
       else:
         root_categories.append(category)

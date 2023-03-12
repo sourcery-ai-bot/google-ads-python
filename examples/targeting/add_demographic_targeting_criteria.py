@@ -40,8 +40,8 @@ def main(client, customer_id, ad_group_id):
     age_range_ad_group_criterion_operation = client.get_type(
         'AdGroupCriterionOperation', version='v3')
     age_range_ad_group_criterion = age_range_ad_group_criterion_operation.create
-    age_range_ad_group_criterion.ad_group.value = ad_group_resource_name
     age_range_ad_group_criterion.negative.value = True
+    age_range_ad_group_criterion.ad_group.value = ad_group_resource_name
     age_range_ad_group_criterion.age_range.type = client.get_type(
         'AgeRangeTypeEnum').AGE_RANGE_18_24
 
@@ -52,8 +52,9 @@ def main(client, customer_id, ad_group_id):
                 customer_id, [gender_ad_group_criterion_operation,
                               age_range_ad_group_criterion_operation]))
     except google.ads.google_ads.errors.GoogleAdsException as ex:
-        print('Request with ID "%s" failed with status "%s" and includes the '
-              'following errors:' % (ex.request_id, ex.error.code().name))
+        print(
+            f'Request with ID "{ex.request_id}" failed with status "{ex.error.code().name}" and includes the following errors:'
+        )
         for error in ex.failure.errors:
             print('\tError with message "%s".' % error.message)
             if error.location:
@@ -62,7 +63,7 @@ def main(client, customer_id, ad_group_id):
         sys.exit(1)
 
     for result in ad_group_criterion_response.results:
-      print('Created keyword {}.'.format(result.resource_name))
+        print(f'Created keyword {result.resource_name}.')
 
 
 if __name__ == '__main__':

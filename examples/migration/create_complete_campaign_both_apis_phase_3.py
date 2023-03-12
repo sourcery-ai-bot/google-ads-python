@@ -59,8 +59,7 @@ def create_campaign_budget(client, customer_id):
     campaign_service = client.get_service('CampaignBudgetService', version='v3')
     operation = client.get_type('CampaignBudgetOperation', version='v3')
     criterion = operation.create
-    criterion.name.value = 'Interplanetary Cruise Budget #{}'.format(
-                            uuid.uuid4())
+    criterion.name.value = f'Interplanetary Cruise Budget #{uuid.uuid4()}'
     criterion.delivery_method = client.get_type(
                                 'BudgetDeliveryMethodEnum',
                                 version='v3').STANDARD
@@ -70,7 +69,7 @@ def create_campaign_budget(client, customer_id):
     campaign_budget_resource_name = response.results[0].resource_name
     new_campaign_budget = get_campaign_budget(client, customer_id,
                           campaign_budget_resource_name)
-    print('Added budget named {}'.format(new_campaign_budget.name.value))
+    print(f'Added budget named {new_campaign_budget.name.value}')
     return new_campaign_budget
 
 
@@ -88,12 +87,9 @@ def get_campaign_budget(client, customer_id, resource_name):
             newly created Budget.
     """
     ga_service = client.get_service('GoogleAdsService', version='v3')
-    query = ('SELECT campaign_budget.id, campaign_budget.name, '
-             'campaign_budget.resource_name FROM campaign_budget WHERE '
-             'campaign_budget.resource_name = "{}"'.format(resource_name))
+    query = f'SELECT campaign_budget.id, campaign_budget.name, campaign_budget.resource_name FROM campaign_budget WHERE campaign_budget.resource_name = "{resource_name}"'
     response = ga_service.search(customer_id, query, PAGE_SIZE)
-    budget = list(response)[0].campaign_budget
-    return budget
+    return list(response)[0].campaign_budget
 
 
 def create_campaign(client, customer_id, campaign_budget):
@@ -111,7 +107,7 @@ def create_campaign(client, customer_id, campaign_budget):
     operation = client.get_type('CampaignOperation', version='v3')
     campaign = operation.create
     campaign_service = client.get_service('CampaignService', version='v3')
-    campaign.name.value = 'Interplanetary Cruise#{}'.format(uuid.uuid4())
+    campaign.name.value = f'Interplanetary Cruise#{uuid.uuid4()}'
     campaign.advertising_channel_type = client.get_type(
                                         'AdvertisingChannelTypeEnum',
                                         version='v3').SEARCH
@@ -132,7 +128,7 @@ def create_campaign(client, customer_id, campaign_budget):
     response = campaign_service.mutate_campaigns(customer_id, [operation])
     campaign_resource_name = response.results[0].resource_name
     new_campaign = get_campaign(client, customer_id, campaign_resource_name)
-    print('Added campaign named {}'.format(new_campaign.name.value))
+    print(f'Added campaign named {new_campaign.name.value}')
     return new_campaign
 
 
@@ -149,9 +145,7 @@ def get_campaign(client, customer_id, campaign_resource_name):
         A google.ads.google_ads.v2.types.GoogleAdsClient message class instance.
     """
     ga_service = client.get_service('GoogleAdsService', version='v3')
-    query = ('SELECT campaign.id, campaign.name, campaign.resource_name '
-             'FROM campaign WHERE campaign.resource_name = "{}" '
-             .format(campaign_resource_name))
+    query = f'SELECT campaign.id, campaign.name, campaign.resource_name FROM campaign WHERE campaign.resource_name = "{campaign_resource_name}" '
     response = ga_service.search(customer_id, query, PAGE_SIZE)
     campaign = list(response)[0].campaign
     return campaign
@@ -173,7 +167,7 @@ def create_ad_group(client, customer_id, campaign):
     operation = client.get_type('AdGroupOperation', version='v3')
     adgroup = operation.create
     adgroup_service = client.get_service('AdGroupService', version='v3')
-    adgroup.name.value  = 'Earth to Mars Cruises #{}'.format(uuid.uuid4())
+    adgroup.name.value = f'Earth to Mars Cruises #{uuid.uuid4()}'
     adgroup.campaign.value = campaign.resource_name
     adgroup.status = client.get_type('AdGroupStatusEnum',
                      version='v3').ENABLED
@@ -183,7 +177,7 @@ def create_ad_group(client, customer_id, campaign):
     response = adgroup_service.mutate_ad_groups(customer_id, [operation])
     ad_group_resource_name = response.results[0].resource_name
     ad_group = get_ad_group(client, customer_id, ad_group_resource_name)
-    print('Added AdGroup named {}'.format(ad_group.name.value))
+    print(f'Added AdGroup named {ad_group.name.value}')
     return ad_group
 
 
@@ -201,12 +195,9 @@ def get_ad_group(client, customer_id, ad_group_resource_name):
             of the newly created ad group.
     """
     ga_service = client.get_service('GoogleAdsService', version='v3')
-    query = ('SELECT ad_group.id, ad_group.name, ad_group.resource_name '
-             'FROM ad_group WHERE ad_group.resource_name = "{}" '
-             .format(ad_group_resource_name))
+    query = f'SELECT ad_group.id, ad_group.name, ad_group.resource_name FROM ad_group WHERE ad_group.resource_name = "{ad_group_resource_name}" '
     response = ga_service.search(customer_id, query, PAGE_SIZE)
-    adGroup = list(response)[0].ad_group
-    return adGroup
+    return list(response)[0].ad_group
 
 
 def create_text_ads(client, ad_group_id):
@@ -218,22 +209,20 @@ def create_text_ads(client, ad_group_id):
     """
     ad_group_service = client.GetService('AdGroupAdService', 'v201809')
     operations = []
-    for i in range(NUMBER_OF_ADS):
+    for _ in range(NUMBER_OF_ADS):
         operation = {
             'xsi_type': 'AdGroupAd',
             'adGroupId': ad_group_id,
-            # Additional properties (non-required).
             'status': 'PAUSED',
             'ad': {
                 'xsi_type': 'ExpandedTextAd',
-                'headlinePart1': 'Cruise #{} to Mars'.format(
-                                  str(uuid.uuid4())[:8]),
+                'headlinePart1': f'Cruise #{str(uuid.uuid4())[:8]} to Mars',
                 'headlinePart2': 'Best Space Cruise Line',
                 'headlinePart3': 'For Your Loved Ones',
                 'description': 'Buy your tickets now!',
                 'description2': 'Discount ends soon',
-                'finalUrls': ['http://www.example.com/']
-            }
+                'finalUrls': ['http://www.example.com/'],
+            },
         }
         adgroup_operations = {
             'operator': 'ADD',
@@ -243,10 +232,9 @@ def create_text_ads(client, ad_group_id):
 
     results = ad_group_service.mutate(operations)
     for result in results['value']:
-        print('Expanded text ad with ID {} and '
-              'headline {}-{} {} was created'.format(
-               result['ad']['id'], result['ad']['headlinePart1'],
-               result['ad']['headlinePart2'], result['ad']['headlinePart3']))
+        print(
+            f"Expanded text ad with ID {result['ad']['id']} and headline {result['ad']['headlinePart1']}-{result['ad']['headlinePart2']} {result['ad']['headlinePart3']} was created"
+        )
 
 
 def create_keywords(client, ad_group_id, keywords_to_add):
@@ -266,13 +254,14 @@ def create_keywords(client, ad_group_id, keywords_to_add):
             'xsi_type': 'BiddableAdGroupCriterion',
             'adGroupId': ad_group_id,
             'criterion': {
-                'xsi_type' : 'Keyword',
+                'xsi_type': 'Keyword',
                 'text': keyword,
-                'matchType' : 'BROAD'
+                'matchType': 'BROAD',
             },
             'userStatus': 'PAUSED',
-            'finalUrls' : ['http://www.example.com/mars/cruise/?kw={}'.format(
-                           urllib.parse.quote(keyword))]
+            'finalUrls': [
+                f'http://www.example.com/mars/cruise/?kw={urllib.parse.quote(keyword)}'
+            ],
         }
         create_keyword = {
             'operator': 'ADD',
@@ -282,10 +271,9 @@ def create_keywords(client, ad_group_id, keywords_to_add):
 
     results = ad_group_criterion_service.mutate(operations)
     for result in results['value']:
-        print('Keyword with ad group ID {}, keyword ID {}, text {} and match'
-              'type {} was created'.format(result['adGroupId'],
-               result['criterion']['id'], result['criterion']['text'],
-               result['criterion']['matchType']))
+        print(
+            f"Keyword with ad group ID {result['adGroupId']}, keyword ID {result['criterion']['id']}, text {result['criterion']['text']} and matchtype {result['criterion']['matchType']} was created"
+        )
 
 
 if __name__ == '__main__':

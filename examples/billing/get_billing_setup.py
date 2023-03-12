@@ -47,10 +47,9 @@ def main(client, customer_id):
             for row in batch.results:
                 billing_setup = row.billing_setup
                 pai = billing_setup.payments_account_info
-                if pai.secondary_payments_profile_id.value:
-                    secondary_payments_profile_id = pai.secondary_payments_profile_id.value
-                else:
-                    secondary_payments_profile_id = "None"
+                secondary_payments_profile_id = (
+                    pai.secondary_payments_profile_id.value or "None"
+                )
                 print(f'Billing setup with ID {billing_setup.id.value}, '
                       f'status "{billing_setup_status_enum.Name(billing_setup.status)}", '
                       f'payments_account "{billing_setup.payments_account.value}" '

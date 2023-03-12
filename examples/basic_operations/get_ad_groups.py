@@ -29,7 +29,7 @@ def main(client, customer_id, page_size, campaign_id=None):
     query = 'SELECT campaign.id, ad_group.id, ad_group.name FROM ad_group'
 
     if campaign_id:
-        query = '%s WHERE campaign.id = %s' % (query, campaign_id)
+        query = f'{query} WHERE campaign.id = {campaign_id}'
 
     results = ga_service.search(customer_id, query=query, page_size=page_size)
 

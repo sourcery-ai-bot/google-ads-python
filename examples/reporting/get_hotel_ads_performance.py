@@ -51,10 +51,12 @@ def main(client, customer_id, page_size):
             hotel_length_of_stay = row.segments.hotel_length_of_stay
             metrics = row.metrics
 
-            print('Ad group ID "%s" in campaign ID "%s" ' % (ad_group.id.value,
-                  campaign.id.value))
-            print('with hotel check-in on "%s" and "%s" day(s) stay ' % (
-                  hotel_check_in_day_of_week, hotel_length_of_stay.value))
+            print(
+                f'Ad group ID "{ad_group.id.value}" in campaign ID "{campaign.id.value}" '
+            )
+            print(
+                f'with hotel check-in on "{hotel_check_in_day_of_week}" and "{hotel_length_of_stay.value}" day(s) stay '
+            )
             print('had %d impression(s) and %d average lead value (in micros) '
                   'during the last 7 days.\n' % (metrics.impressions.value,
                   metrics.hotel_average_lead_value_micros.value))

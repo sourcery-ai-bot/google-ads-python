@@ -30,8 +30,7 @@ def main(client, customer_id, campaign_draft_resource_name):
     # Create the campaign experiment.
     campaign_experiment = client.get_type('CampaignExperiment', version='v3')
     campaign_experiment.campaign_draft.value = campaign_draft_resource_name
-    campaign_experiment.name.value = 'Campaign Experiment #{}'.format(
-        uuid.uuid4())
+    campaign_experiment.name.value = f'Campaign Experiment #{uuid.uuid4()}'
     campaign_experiment.traffic_split_percent.value = 50
     campaign_experiment.traffic_split_type = client.get_type(
         'CampaignExperimentTrafficSplitTypeEnum', version='v3').RANDOM_QUERY
@@ -46,18 +45,19 @@ def main(client, customer_id, campaign_draft_resource_name):
             campaign_experiment_service.create_campaign_experiment(
                 customer_id, campaign_experiment))
     except GoogleAdsException as ex:
-        print('Request with ID "{}" failed with status "{}" and includes the '
-              'following errors:'.format(ex.request_id, ex.error.code().name))
+        print(
+            f'Request with ID "{ex.request_id}" failed with status "{ex.error.code().name}" and includes the following errors:'
+        )
         for error in ex.failure.errors:
-            print('\tError with message "{}".'.format(error.message))
+            print(f'\tError with message "{error.message}".')
             if error.location:
                 for field_path_element in error.location.field_path_elements:
-                    print('\t\tOn field: {}'.format(field_path_element.field_name))
+                    print(f'\t\tOn field: {field_path_element.field_name}')
         sys.exit(1)
 
-    print('Asynchronous request to create campaign experiment with '
-          'resource name "{}" started.'.format(
-              campaign_experiment_lro.metadata.campaign_experiment))
+    print(
+        f'Asynchronous request to create campaign experiment with resource name "{campaign_experiment_lro.metadata.campaign_experiment}" started.'
+    )
     print('Waiting until operation completes.')
 
     # Poll until the operation completes.
@@ -65,26 +65,24 @@ def main(client, customer_id, campaign_draft_resource_name):
 
     # Retrieve the campaign experiment that has been created.
     ga_service = client.get_service('GoogleAdsService', version='v3')
-    query = (
-        'SELECT campaign_experiment.experiment_campaign '
-        'FROM campaign_experiment '
-        'WHERE campaign_experiment.resource_name = "{}"'.format(
-            campaign_experiment_lro.metadata.campaign_experiment))
+    query = f'SELECT campaign_experiment.experiment_campaign FROM campaign_experiment WHERE campaign_experiment.resource_name = "{campaign_experiment_lro.metadata.campaign_experiment}"'
 
     results = ga_service.search(customer_id, query=query, page_size=1)
 
     try:
         for row in results:
-            print('Experiment campaign "{}" creation completed.'.format(
-                row.campaign_experiment.experiment_campaign.value))
+            print(
+                f'Experiment campaign "{row.campaign_experiment.experiment_campaign.value}" creation completed.'
+            )
     except GoogleAdsException as ex:
-        print('Request with ID "{}" failed with status "{}" and includes the '
-              'following errors:'.format(ex.request_id, ex.error.code().name))
+        print(
+            f'Request with ID "{ex.request_id}" failed with status "{ex.error.code().name}" and includes the following errors:'
+        )
         for error in ex.failure.errors:
-            print('\tError with message "{}".'.format(error.message))
+            print(f'\tError with message "{error.message}".')
             if error.location:
                 for field_path_element in error.location.field_path_elements:
-                    print('\t\tOn field: {}'.format(field_path_element.field_name))
+                    print(f'\t\tOn field: {field_path_element.field_name}')
         sys.exit(1)
 
 if __name__ == '__main__':

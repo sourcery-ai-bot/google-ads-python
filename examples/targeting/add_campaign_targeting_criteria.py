@@ -46,7 +46,7 @@ def main(client, customer_id, campaign_id, keyword, location_id):
         sys.exit(1)
 
     for result in campaign_criterion_response.results:
-        print('Added campaign criterion "%s".' % result.resource_name)
+        print(f'Added campaign criterion "{result.resource_name}".')
 
 
 def create_location_op(client, customer_id, campaign_id, location_id):

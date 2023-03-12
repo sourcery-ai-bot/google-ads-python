@@ -100,8 +100,6 @@ def get_credentials(config_data):
             config_data.get('path_to_private_key_file'),
             config_data.get('delegated_account'))
     else:
-        raise ValueError('Your YAML file is incorrectly configured for OAuth2. '
-                         'You need to define credentials for either the OAuth2 '
-                         'installed application flow ({}) or service account '
-                         'flow ({}).'.format(required_installed_app_keys,
-                                             required_service_account_keys))
+        raise ValueError(
+            f'Your YAML file is incorrectly configured for OAuth2. You need to define credentials for either the OAuth2 installed application flow ({required_installed_app_keys}) or service account flow ({required_service_account_keys}).'
+        )

@@ -66,7 +66,7 @@ def add_campaign_budget(client, customer_id):
     campaign_budget_operation = client.get_type('CampaignBudgetOperation',
                                                 version='v3')
     campaign_budget = campaign_budget_operation.create
-    campaign_budget.name.value = 'Interplanetary Budget %s' % uuid.uuid4()
+    campaign_budget.name.value = f'Interplanetary Budget {uuid.uuid4()}'
     campaign_budget.delivery_method = client.get_type(
         'BudgetDeliveryMethodEnum').STANDARD
     campaign_budget.amount_micros.value = 500000
@@ -88,7 +88,7 @@ def add_campaign_budget(client, customer_id):
 
     budget_resource_name = campaign_budget_response.results[0].resource_name
 
-    print('Added a budget with resource name: %s' % budget_resource_name)
+    print(f'Added a budget with resource name: {budget_resource_name}')
 
     return budget_resource_name
 
@@ -123,8 +123,7 @@ def add_shopping_product_ad_group_ad(client, customer_id,
 
     ad_group_ad_resource_name = ad_group_ad_response.results[0].resource_name
 
-    print('Created shopping product ad group ad %s.' %
-          ad_group_ad_resource_name)
+    print(f'Created shopping product ad group ad {ad_group_ad_resource_name}.')
 
     return ad_group_resource_name
 
@@ -136,7 +135,7 @@ def add_shopping_product_ad_group(client, customer_id, campaign_resource_name):
     # Create ad group.
     ad_group_operation = client.get_type('AdGroupOperation', version='v3')
     ad_group = ad_group_operation.create
-    ad_group.name.value = 'Earth to Mars cruise %s' % uuid.uuid4()
+    ad_group.name.value = f'Earth to Mars cruise {uuid.uuid4()}'
     ad_group.status = client.get_type('AdGroupStatusEnum', version='v3').ENABLED
     ad_group.campaign.value = campaign_resource_name
     # Sets the ad group type to SHOPPING_PRODUCT_ADS. This is the only value
@@ -161,8 +160,9 @@ def add_shopping_product_ad_group(client, customer_id, campaign_resource_name):
 
     ad_group_resource_name = ad_group_response.results[0].resource_name
 
-    print('Added a product shopping ad group with resource name "%s".'
-          % ad_group_resource_name)
+    print(
+        f'Added a product shopping ad group with resource name "{ad_group_resource_name}".'
+    )
 
     return ad_group_resource_name
 
@@ -176,7 +176,7 @@ def add_standard_shopping_campaign(client, customer_id, budget_resource_name,
     # Create standard shoppping campaign.
     campaign_operation = client.get_type('CampaignOperation', version='v3')
     campaign = campaign_operation.create
-    campaign.name.value = 'Interplanetary Cruise Campaign %s' % uuid.uuid4()
+    campaign.name.value = f'Interplanetary Cruise Campaign {uuid.uuid4()}'
 
     # Configures settings related to shopping campaigns including advertising
     # channel type and shopping setting.
@@ -225,8 +225,9 @@ def add_standard_shopping_campaign(client, customer_id, budget_resource_name,
 
     campaign_resource_name = campaign_response.results[0].resource_name
 
-    print('Added a standard shopping campaign with resource name "%s".'
-          % campaign_resource_name)
+    print(
+        f'Added a standard shopping campaign with resource name "{campaign_resource_name}".'
+    )
 
     return campaign_resource_name
 

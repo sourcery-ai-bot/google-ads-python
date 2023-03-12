@@ -33,28 +33,30 @@ def main(client, customer_id, campaign_id, page_size):
     results = ga_service.search(customer_id, query=query, page_size=page_size)
 
     try:
-        disapproved_ads_count = 0
         ad_type_enum = client.get_type('AdTypeEnum', version='v3').AdType
         policy_topic_entry_type_enum = client.get_type(
             'PolicyTopicEntryTypeEnum').PolicyTopicEntryType
 
         print('Disapproved ads:')
 
+        disapproved_ads_count = 0
         # Iterate over all ads in all rows returned and count disapproved ads.
         for row in results:
             ad_group_ad = row.ad_group_ad
             ad = ad_group_ad.ad
             policy_summary = ad_group_ad.policy_summary
 
-            if not policy_summary.approval_status == client.get_type(
-                  'PolicyApprovalStatusEnum').DISAPPROVED:
+            if (
+                policy_summary.approval_status
+                != client.get_type('PolicyApprovalStatusEnum').DISAPPROVED
+            ):
                 continue
 
             disapproved_ads_count += 1
 
-            print('Ad with ID "%s" and type "%s" was disapproved with the '
-                  'following policy topic entries:'
-                  % (ad.id.value, ad_type_enum.Name(ad.type)))
+            print(
+                f'Ad with ID "{ad.id.value}" and type "{ad_type_enum.Name(ad.type)}" was disapproved with the following policy topic entries:'
+            )
 
             # Display the policy topic entries related to the ad disapproval.
             for entry in policy_summary.policy_topic_entries:

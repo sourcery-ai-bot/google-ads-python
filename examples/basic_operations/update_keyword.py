@@ -53,7 +53,7 @@ def main(client, customer_id, ad_group_id, criterion_id):
                     print('\t\tOn field: %s' % field_path_element.field_name)
         sys.exit(1)
 
-    print('Updated keyword %s.' % agc_response.results[0].resource_name)
+    print(f'Updated keyword {agc_response.results[0].resource_name}.')
 
 
 if __name__ == '__main__':

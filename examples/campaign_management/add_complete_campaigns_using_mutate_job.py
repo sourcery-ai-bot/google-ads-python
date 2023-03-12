@@ -162,55 +162,62 @@ def _build_all_operations(client, customer_id):
 
     Returns: a list of operations of various types.
     """
-    operations = []
-
     # Creates a new campaign budget operation and adds it to the list of
     # mutate operations.
     campaign_budget_op = _build_campaign_budget_operation(client, customer_id)
-    operations.append(_build_mutate_operation(
-        client, 'campaign_budget_operation', campaign_budget_op))
-
+    operations = [
+        _build_mutate_operation(
+            client, 'campaign_budget_operation', campaign_budget_op
+        )
+    ]
     # Creates new campaign operations and adds them to the list of
     # mutate operations.
     campaign_operations = _build_campaign_operations(
         client, customer_id, campaign_budget_op.create.resource_name)
-    operations = operations + [
-        _build_mutate_operation(client, 'campaign_operation', operation) \
-        for operation in campaign_operations]
+    operations += [
+        _build_mutate_operation(client, 'campaign_operation', operation)
+        for operation in campaign_operations
+    ]
 
     # Creates new campaign criterion operations and adds them to the list of
     # mutate operations.
     campaign_criterion_operations = _build_campaign_criterion_operations(
         client, campaign_operations)
-    operations = operations + [
+    operations += [
         _build_mutate_operation(
-            client, 'campaign_criterion_operation', operation) \
-        for operation in campaign_criterion_operations]
+            client, 'campaign_criterion_operation', operation
+        )
+        for operation in campaign_criterion_operations
+    ]
 
     # Creates new ad group operations and adds them to the list of
     # mutate operations.
     ad_group_operations = _build_ad_group_operations(
         client, customer_id, campaign_operations)
-    operations = operations + [
-        _build_mutate_operation(client, 'ad_group_operation', operation) \
-        for operation in ad_group_operations]
+    operations += [
+        _build_mutate_operation(client, 'ad_group_operation', operation)
+        for operation in ad_group_operations
+    ]
 
     # Creates new ad group criterion operations and add them to the list of
     # mutate operations.
     ad_group_criterion_operations = _build_ad_group_criterion_operations(
         client, ad_group_operations)
-    operations = operations + [
+    operations += [
         _build_mutate_operation(
-            client, 'ad_group_criterion_operation', operation) \
-        for operation in ad_group_criterion_operations]
+            client, 'ad_group_criterion_operation', operation
+        )
+        for operation in ad_group_criterion_operations
+    ]
 
     # Creates new ad group ad operations and adds them to the list of
     # mutate operations.
     ad_group_ad_operations = _build_ad_group_ad_operations(
         client, ad_group_operations)
-    operations = operations + [
-        _build_mutate_operation(client, 'ad_group_ad_operation', operation) \
-        for operation in ad_group_ad_operations]
+    operations += [
+        _build_mutate_operation(client, 'ad_group_ad_operation', operation)
+        for operation in ad_group_ad_operations
+    ]
 
     return operations
 
@@ -254,8 +261,10 @@ def _build_campaign_operations(client, customer_id,
     """
     return [
         _build_campaign_operation(
-            client, customer_id, campaign_budget_resource_name) \
-        for i in range(NUMBER_OF_CAMPAIGNS_TO_ADD)]
+            client, customer_id, campaign_budget_resource_name
+        )
+        for _ in range(NUMBER_OF_CAMPAIGNS_TO_ADD)
+    ]
 
 
 def _build_campaign_operation(client, customer_id,
@@ -342,11 +351,10 @@ def _build_ad_group_operations(client, customer_id, campaign_operations):
     operations = []
 
     for campaign_operation in campaign_operations:
-        for i in range(NUMBER_OF_AD_GROUPS_TO_ADD):
-            operations.append(
-                _build_ad_group_operation(
-                    client, customer_id, campaign_operation))
-
+        operations.extend(
+            _build_ad_group_operation(client, customer_id, campaign_operation)
+            for _ in range(NUMBER_OF_AD_GROUPS_TO_ADD)
+        )
     return operations
 
 
@@ -392,13 +400,17 @@ def _build_ad_group_criterion_operations(client, ad_group_operations):
     operations = []
 
     for ad_group_operation in ad_group_operations:
-        for i in range(NUMBER_OF_KEYWORDS_TO_ADD):
-            operations.append(
-                _build_ad_group_criterion_operation(
-                    # Create a keyword text by making 50% of keywords invalid
-                    # to demonstrate error handling.
-                    client, ad_group_operation, i, i % 2 == 0))
-
+        operations.extend(
+            _build_ad_group_criterion_operation(
+                # Create a keyword text by making 50% of keywords invalid
+                # to demonstrate error handling.
+                client,
+                ad_group_operation,
+                i,
+                i % 2 == 0,
+            )
+            for i in range(NUMBER_OF_KEYWORDS_TO_ADD)
+        )
     return operations
 
 
@@ -537,7 +549,7 @@ def _fetch_and_print_results(mutate_job_service, resource_name):
 
     for mutate_job_result in mutate_job_results:
         status = mutate_job_result.status.message
-        status = status if status else 'N/A'
+        status = status or 'N/A'
         result = mutate_job_result.mutate_operation_response
         result = result if result.ByteSize() else 'N/A'
         print(f'Mutate job #{mutate_job_result.operation_index} '

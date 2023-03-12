@@ -54,7 +54,7 @@ def add_budget(client, customer_id):
     campaign_budget_operation = client.get_type('CampaignBudgetOperation',
                                                 version='v3')
     campaign_budget = campaign_budget_operation.create
-    campaign_budget.name.value = 'Interplanetary Budget %s' % uuid.uuid4()
+    campaign_budget.name.value = f'Interplanetary Budget {uuid.uuid4()}'
     campaign_budget.delivery_method = client.get_type(
         'BudgetDeliveryMethodEnum').STANDARD
     campaign_budget.amount_micros.value = 500000
@@ -76,7 +76,7 @@ def add_budget(client, customer_id):
 
     budget_resource_name = campaign_budget_response.results[0].resource_name
 
-    print('Created budget %s' % budget_resource_name)
+    print(f'Created budget {budget_resource_name}')
 
     return budget_resource_name
 
@@ -112,7 +112,7 @@ def add_hotel_ad(client, customer_id, ad_group_resource_name):
 
     ad_group_ad_resource_name = ad_group_ad_response.results[0].resource_name
 
-    print('Created hotel ad %s.' % ad_group_ad_resource_name)
+    print(f'Created hotel ad {ad_group_ad_resource_name}.')
 
     return ad_group_resource_name
 
@@ -123,7 +123,7 @@ def add_hotel_ad_group(client, customer_id, campaign_resource_name):
     # Create ad group.
     ad_group_operation = client.get_type('AdGroupOperation', version='v3')
     ad_group = ad_group_operation.create
-    ad_group.name.value = 'Earth to Mars cruise %s' % uuid.uuid4()
+    ad_group.name.value = f'Earth to Mars cruise {uuid.uuid4()}'
     ad_group.status = client.get_type('AdGroupStatusEnum', version='v3').ENABLED
     ad_group.campaign.value = campaign_resource_name
     # Sets the ad group type to HOTEL_ADS. This cannot be set to other types.
@@ -146,8 +146,7 @@ def add_hotel_ad_group(client, customer_id, campaign_resource_name):
 
     ad_group_resource_name = ad_group_response.results[0].resource_name
 
-    print('Added a hotel ad group with resource name "%s".'
-          % ad_group_resource_name)
+    print(f'Added a hotel ad group with resource name "{ad_group_resource_name}".')
 
     return ad_group_resource_name
 
@@ -159,7 +158,7 @@ def add_hotel_campaign(client, customer_id, budget_resource_name,
     # Create campaign.
     campaign_operation = client.get_type('CampaignOperation', version='v3')
     campaign = campaign_operation.create
-    campaign.name.value = 'Interplanetary Cruise Campaign %s' % uuid.uuid4()
+    campaign.name.value = f'Interplanetary Cruise Campaign {uuid.uuid4()}'
 
     # Configures settings related to hotel campaigns including advertising
     # channel type and hotel setting info.
@@ -177,20 +176,19 @@ def add_hotel_campaign(client, customer_id, budget_resource_name,
     campaign.percent_cpc.cpc_bid_ceiling_micros.value = (
         bid_ceiling_micro_amount)
 
-    # Sets the budget.
-    campaign.campaign_budget.value = budget_resource_name
-
     # Set the campaign network options. Only Google Search is allowed for hotel
     # campaigns.
     campaign.network_settings.target_google_search.value = True
 
+    campaign.campaign_budget.value = budget_resource_name
     # Add the campaign.
     try:
         campaign_response = campaign_service.mutate_campaigns(
             customer_id, [campaign_operation])
     except google.ads.google_ads.errors.GoogleAdsException as ex:
-        print('Request with ID "%s" failed with status "%s" and includes the '
-              'following errors:' % (ex.request_id, ex.error.code().name))
+        print(
+            f'Request with ID "{ex.request_id}" failed with status "{ex.error.code().name}" and includes the following errors:'
+        )
         for error in ex.failure.errors:
             print('\tError with message "%s".' % error.message)
             if error.location:
@@ -200,8 +198,7 @@ def add_hotel_campaign(client, customer_id, budget_resource_name,
 
     campaign_resource_name = campaign_response.results[0].resource_name
 
-    print('Added a hotel campaign with resource name "%s".'
-          % campaign_resource_name)
+    print(f'Added a hotel campaign with resource name "{campaign_resource_name}".')
 
     return campaign_resource_name
 

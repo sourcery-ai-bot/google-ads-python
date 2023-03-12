@@ -45,11 +45,9 @@ class Interceptor:
             A str request ID associated with the Google Ads API request, or None
             if it doesn't exist.
         """
-        for kv in trailing_metadata:
-            if kv[0] == _REQUEST_ID_KEY:
-                return kv[1]  # Return the found request ID.
-
-        return None
+        return next(
+            (kv[1] for kv in trailing_metadata if kv[0] == _REQUEST_ID_KEY), None
+        )
 
     @classmethod
     def parse_metadata_to_json(cls, metadata):
@@ -93,10 +91,7 @@ class Interceptor:
         """
 
         def default_serializer(value):
-            if isinstance(value, bytes):
-                return value.decode(errors='ignore')
-            else:
-                return None
+            return value.decode(errors='ignore') if isinstance(value, bytes) else None
 
         return str(json.dumps(obj, indent=2, sort_keys=True, ensure_ascii=False,
                               default=default_serializer,
@@ -184,29 +179,26 @@ class Interceptor:
         status_code = response.code()
         response_exception = response.exception()
 
-        if status_code not in _RETRY_STATUS_CODES:
-            trailing_metadata = response.trailing_metadata()
-            google_ads_failure = self._get_google_ads_failure(trailing_metadata)
-
-            if google_ads_failure:
-                request_id = self.get_request_id_from_metadata(
-                    trailing_metadata)
-
-                # If exception is a GoogleAdsFailure then it gets wrapped in a
-                # library-specific Error type for easy handling. These errors
-                # originate from the Google Ads API and are often caused by
-                # invalid requests.
-                return GoogleAdsException(
-                    response_exception, response, google_ads_failure,
-                    request_id)
-            else:
-                # Raise the original exception if not a GoogleAdsFailure. This
-                # type of error is generally caused by problems at the request
-                # level, such as when an invalid endpoint is given.
-                return response_exception
-        else:
+        if status_code in _RETRY_STATUS_CODES:
             # Raise the original exception if error has status code
             # INTERNAL or RESOURCE_EXHAUSTED, meaning that
+            return response_exception
+        trailing_metadata = response.trailing_metadata()
+        if google_ads_failure := self._get_google_ads_failure(trailing_metadata):
+            request_id = self.get_request_id_from_metadata(
+                trailing_metadata)
+
+            # If exception is a GoogleAdsFailure then it gets wrapped in a
+            # library-specific Error type for easy handling. These errors
+            # originate from the Google Ads API and are often caused by
+            # invalid requests.
+            return GoogleAdsException(
+                response_exception, response, google_ads_failure,
+                request_id)
+        else:
+            # Raise the original exception if not a GoogleAdsFailure. This
+            # type of error is generally caused by problems at the request
+            # level, such as when an invalid endpoint is given.
             return response_exception
 
 

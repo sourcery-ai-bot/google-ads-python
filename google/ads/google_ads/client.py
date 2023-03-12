@@ -13,6 +13,7 @@
 # limitations under the License.
 """A client and common configurations for the Google Ads API."""
 
+
 from importlib import import_module
 import logging.config
 
@@ -36,10 +37,9 @@ _GRPC_CHANNEL_OPTIONS = [
     ('grpc.max_receive_message_length', 64 * 1024 * 1024)]
 
 
-unary_stream_single_threading_option = util.get_nested_attr(
-    grpc, 'experimental.ChannelOptions.SingleThreadedUnaryStream', None)
-
-if unary_stream_single_threading_option:
+if unary_stream_single_threading_option := util.get_nested_attr(
+    grpc, 'experimental.ChannelOptions.SingleThreadedUnaryStream', None
+):
     _GRPC_CHANNEL_OPTIONS.append(
         (unary_stream_single_threading_option, 1))
 
@@ -80,9 +80,9 @@ class GoogleAdsClient(object):
         try:
             version_module = import_module(f'google.ads.google_ads.{version}')
         except ImportError:
-            raise ValueError('Specified Google Ads API version "{}" does not '
-                             'exist. Valid API versions are: "{}"'.format(
-                                 version, '", "'.join(_VALID_API_VERSIONS)))
+            raise ValueError(
+                f"""Specified Google Ads API version "{version}" does not exist. Valid API versions are: "{'", "'.join(_VALID_API_VERSIONS)}\""""
+            )
         return version_module
 
     @classmethod
@@ -233,18 +233,19 @@ class GoogleAdsClient(object):
             service_client = getattr(api_module,
                                      _SERVICE_CLIENT_TEMPLATE.format(name))
         except AttributeError:
-            raise ValueError('Specified service {}" does not exist in Google '
-                             'Ads API {}.'.format(name, version))
+            raise ValueError(
+                f'Specified service {name}" does not exist in Google Ads API {version}.'
+            )
 
         try:
             service_transport_class = getattr(
                 api_module, _SERVICE_GRPC_TRANSPORT_TEMPLATE.format(name))
         except AttributeError:
-            raise ValueError('Grpc transport does not exist for the specified '
-                             'service "{}".'.format(name))
+            raise ValueError(
+                f'Grpc transport does not exist for the specified service "{name}".'
+            )
 
-        endpoint = (self.endpoint if self.endpoint
-                    else service_client.SERVICE_ADDRESS)
+        endpoint = self.endpoint or service_client.SERVICE_ADDRESS
 
         channel = service_transport_class.create_channel(
             address=endpoint,

@@ -68,11 +68,12 @@ class LoggingInterceptor(Interceptor, UnaryUnaryClientInterceptor,
         try:
             trailing_metadata = response.trailing_metadata()
 
-            if not trailing_metadata:
-                return self.get_trailing_metadata_from_interceptor_exception(
-                    response.exception())
-
-            return trailing_metadata
+            return (
+                trailing_metadata
+                or self.get_trailing_metadata_from_interceptor_exception(
+                    response.exception()
+                )
+            )
         except AttributeError:
             return self.get_trailing_metadata_from_interceptor_exception(
                 response.exception())

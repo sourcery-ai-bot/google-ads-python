@@ -75,7 +75,7 @@ def main(client, customer_id, ad_group_id):
 
     final_url = ad_group_ad.ad.final_urls.add()
     final_url.value = 'http://www.example.com'
-    ad_group_ad.ad.name.value = 'Gmail Ad #{}'.format(str(uuid4()))
+    ad_group_ad.ad.name.value = f'Gmail Ad #{str(uuid4())}'
 
     ad_group_ad.status = client.get_type('AdGroupAdStatusEnum').PAUSED
     ad_group_ad.ad_group.value = ad_group_ad_service.ad_group_ad_path(
@@ -85,18 +85,17 @@ def main(client, customer_id, ad_group_id):
         add_gmail_ad_response = ad_group_ad_service.mutate_ad_group_ads(
             customer_id, [ad_group_ad_op])
     except GoogleAdsException as ex:
-        print('Request with ID "{}" failed with status "{}" and includes the '
-              'following errors:'.format(ex.request_id, ex.error.code().name))
+        print(
+            f'Request with ID "{ex.request_id}" failed with status "{ex.error.code().name}" and includes the following errors:'
+        )
         for error in ex.failure.errors:
-            print('\tError with message "{}".'.format(error.message))
+            print(f'\tError with message "{error.message}".')
             if error.location:
                 for field_path_element in error.location.field_path_elements:
-                    print('\t\tOn field: {}'.format(
-                        field_path_element.field_name))
+                    print(f'\t\tOn field: {field_path_element.field_name}')
         sys.exit(1)
 
-    print('Created gmail ad {}.'.format(
-        add_gmail_ad_response.results[0].resource_name))
+    print(f'Created gmail ad {add_gmail_ad_response.results[0].resource_name}.')
 
 
 def get_image(url):

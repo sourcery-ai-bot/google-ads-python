@@ -33,7 +33,7 @@ def main(client, customer_id):
     campaign_budget_operation = client.get_type('CampaignBudgetOperation',
                                                 version='v3')
     campaign_budget = campaign_budget_operation.create
-    campaign_budget.name.value = 'Interplanetary Budget %s' % uuid.uuid4()
+    campaign_budget.name.value = f'Interplanetary Budget {uuid.uuid4()}'
     campaign_budget.delivery_method = client.get_type(
         'BudgetDeliveryMethodEnum').STANDARD
     campaign_budget.amount_micros.value = 500000
@@ -56,13 +56,13 @@ def main(client, customer_id):
 
     campaign_budget_id = campaign_budget_response.results[0].resource_name
 
-    print('Budget "%s" was created.' % campaign_budget_id)
+    print(f'Budget "{campaign_budget_id}" was created.')
 
     # Create a portfolio bidding strategy.
     bidding_strategy_operation = client.get_type('BiddingStrategyOperation',
                                                  version='v3')
     bidding_strategy = bidding_strategy_operation.create
-    bidding_strategy.name.value = 'Enhanced CPC %s' % uuid.uuid4()
+    bidding_strategy.name.value = f'Enhanced CPC {uuid.uuid4()}'
     target_spend = bidding_strategy.target_spend
     target_spend.cpc_bid_ceiling_micros.value = 2000000
     target_spend.target_spend_micros.value = 20000000
@@ -84,12 +84,12 @@ def main(client, customer_id):
 
     bidding_strategy_id = bidding_strategy_response.results[0].resource_name
 
-    print('Portfolio bidding strategy "%s" was created.' % bidding_strategy_id)
+    print(f'Portfolio bidding strategy "{bidding_strategy_id}" was created.')
 
     # Create campaign.
     campaign_operation = client.get_type('CampaignOperation', version='v3')
     campaign = campaign_operation.create
-    campaign.name.value = 'Interplanetary Cruise %s' % uuid.uuid4()
+    campaign.name.value = f'Interplanetary Cruise {uuid.uuid4()}'
     campaign.advertising_channel_type = client.get_type(
         'AdvertisingChannelTypeEnum').SEARCH
 
@@ -123,7 +123,7 @@ def main(client, customer_id):
                     print('\t\tOn field: %s' % field_path_element.field_name)
         sys.exit(1)
 
-    print('Created campaign %s.' % campaign_response.results[0].resource_name)
+    print(f'Created campaign {campaign_response.results[0].resource_name}.')
 
 
 if __name__ == '__main__':

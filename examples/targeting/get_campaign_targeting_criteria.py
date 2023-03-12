@@ -40,8 +40,9 @@ def main(client, customer_id, campaign_id, page_size):
     try:
         for row in results:
             criterion = row.campaign_criterion
-            print('Campaign criterion with ID "%s" was retrieved:'
-                  % criterion.criterion_id.value)
+            print(
+                f'Campaign criterion with ID "{criterion.criterion_id.value}" was retrieved:'
+            )
 
             if criterion.type == client.get_type('CriterionTypeEnum',
                                                  version='v3').KEYWORD:

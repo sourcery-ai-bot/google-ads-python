@@ -61,8 +61,9 @@ def main(client, customer_id, ad_group_id, bid_modifier_value):
                     print('\t\tOn field: %s' % field_path_element.field_name)
         sys.exit(1)
 
-    print('Created ad group bid modifier: %s.'
-          % ad_group_bm_response.results[0].resource_name)
+    print(
+        f'Created ad group bid modifier: {ad_group_bm_response.results[0].resource_name}.'
+    )
 
 
 if __name__ == '__main__':

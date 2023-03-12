@@ -40,8 +40,9 @@ def main(client, customer_id, page_size):
         for row in results:
             recommendation = row.recommendation
             recommended_ad = recommendation.text_ad_recommendation.ad
-            print('Recommendation ("%s") was found for campaign "%s".'
-                  % (recommendation.resource_name, recommendation.campaign))
+            print(
+                f'Recommendation ("{recommendation.resource_name}") was found for campaign "{recommendation.campaign}".'
+            )
 
             if recommended_ad.display_url:
                 print('\tDisplay URL = "%s"' % recommended_ad.display_url)

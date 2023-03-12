@@ -37,8 +37,7 @@ def main(client, customer_id, ad_group_id, criterion_id):
     resource_name = ad_group_criterion_service.ad_group_criteria_path(
         customer_id, ResourceName.format_composite(ad_group_id, criterion_id))
 
-    operations = []
-    operations.append(create_ad_parameter(client, resource_name, 1, '100'))
+    operations = [create_ad_parameter(client, resource_name, 1, '100')]
     operations.append(create_ad_parameter(client, resource_name, 2, '$40'))
 
     ad_parameter_service = client.get_service('AdParameterService',
@@ -58,11 +57,10 @@ def main(client, customer_id, ad_group_id, criterion_id):
                     print('\t\tOn field: %s' % field_path_element.field_name)
         sys.exit(1)
     else:
-        print('Set {} ad parameters:'.format(len(response.results)))
+        print(f'Set {len(response.results)} ad parameters:')
 
         for result in response.results:
-            print('Set ad parameter with resource_name: {}'.format(
-                result.resource_name))
+            print(f'Set ad parameter with resource_name: {result.resource_name}')
 
 def create_ad_parameter(client, resource_name, parameter_index, insertion_text):
     """Creates a new ad parameter create operation and returns it.
